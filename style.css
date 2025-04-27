@@ -8,11 +8,14 @@
 
 }
 .actions-container {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
+    display: flex; /* Tells the browser to use Flexbox for layout */
+    justify-content: space-around; /* Distributes space around the items */
+
+    /* Optional: Add some space between the image and this actions row */
+    margin-top: 20px; 
 }
 
 .action-item {
-    text-align: center;
+    /* Center the content (button and stat) within each item block */
+    text-align: center; 
 }
