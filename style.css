@@ -6,7 +6,7 @@ body {
     max-width: 350px;
     margin: 30px auto;
     padding: 20px;
-    background-color: #77512b;
+    background-color: #b28c58;
     border: 3px solid #3d2511;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -46,10 +46,12 @@ body {
 .stat-indicator {
     margin-top: 8px;
     font-size: 0.9em;
+    font-weight: bold;
     color: #3d2511;
 }
 .progress-bar-container {
     background-color: #77512b;
+    border: 3px solid #3d2511;
     border-radius: 20px;
     height: 10px;
     overflow: hidden;
