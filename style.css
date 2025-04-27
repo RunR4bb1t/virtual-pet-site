@@ -1,0 +1,19 @@
+.pet-image {
+    width: 250px; 
+
+    /* Optional: Make it a block element and center it horizontally */
+    display: block;
+    margin-left: auto;
+    margin-right: auto; 
+
+}
+.actions-container {
+    display: flex;
+    justify-content: space-around
+    margin-top: 20px
+}
+
+.action-item {
+
+text-align: center;
+}
