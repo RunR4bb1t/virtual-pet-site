@@ -1,3 +1,7 @@
+body {
+    background-color: #FCF8F3; /* Slightly off-white */
+    font-family: sans-serif;
+}
 .pet-image {
     width: 250px; 
 
@@ -6,6 +10,14 @@
     margin-left: auto;
     margin-right: auto; 
 
+}
+.pet-profile-card {
+    max-width: 350px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #F5EFE6;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .actions-container {
     display: flex; 
