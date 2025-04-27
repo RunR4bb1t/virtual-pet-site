@@ -1,12 +1,13 @@
 body {
-    background-color: #F5EFE6; /* Slightly off-white */
+    background-color: #e3c69b; /* Slightly off-white */
     font-family: sans-serif;
 }
 .pet-profile-card {
     max-width: 350px;
     margin: 30px auto;
     padding: 20px;
-    background-color: #D8C8B4;
+    background-color: #77512b;
+    border: 3px solid #3d2511;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -30,9 +31,9 @@ body {
     text-align: center; 
 }
 .action-button {
-    background-color: #E8D8C4;
-    color: #6F6050;
-    border: 3px solid #C8B8A4;
+    background-color: #77512b;
+    color: #e6bf83;
+    border: 3px solid #3d2511;
     padding: 10px 20px;
     border-radius: 20px;
     text-transform: uppercase;
@@ -40,15 +41,15 @@ body {
     cursor: pointer;
 }
 .action-button:hover {
-    background-color: #C8B8A4;
+    background-color: #c6a16b;
 }
 .stat-indicator {
     margin-top: 8px;
     font-size: 0.9em;
-    color: #6F6050;
+    color: #3d2511;
 }
 .progress-bar-container {
-    background-color: #E8D8C4;
+    background-color: #77512b;
     border-radius: 20px;
     height: 10px;
     overflow: hidden;
