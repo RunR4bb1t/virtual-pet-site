@@ -18,9 +18,9 @@
     text-align: center; 
 }
 .action-button {
-    background-color: #b58e5b;
-    color: #5f3e1f;
-    border: 3px solid #3b2512;
+    background-color: #E8D8C4;
+    color: #6F6050;
+    border: 3px solid #C8B8A4;
     padding: 10px 20px;
     border-radius: 20px;
     text-transform: uppercase;
@@ -28,5 +28,25 @@
     cursor: pointer;
 }
 .action-button:hover {
-    background-color: #917147;
+    background-color: #D8C8B4;
+}
+.stat-indicator {
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #8F7E6D;
+}
+.progress-bar-container {
+    background-color: #E8D8C4;
+    border-radius: 20px;
+    height: 10px;
+    overflow: hidden;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.progress-bar-fill {
+    background-color: #A0A87C;
+    height: 100%;
+    border-radius: 20px;
+    transition: width o.3s ease-in-out;
 }
