@@ -9,11 +9,10 @@
 }
 .actions-container {
     display: flex;
-    justify-content: space-around
-    margin-top: 20px
+    justify-content: space-around;
+    margin-top: 20px;
 }
 
 .action-item {
-
-text-align: center;
+    text-align: center;
 }
