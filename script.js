@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 petImage.src = defaultImageSrc;
                 console.log("Changed image back to default");
-            }, 1500);
+            }, 1000);
         }); // End of PET button
 
         if (actionButtons.length > 1 && progressBarFills.length > 1) { 
