@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const actionButtons = document.querySelectorAll('.action-button'); 
     const progressBarFills = document.querySelectorAll('.progress-bar-fill');
+    const petImage = document.querySelector('.pet-image');
+    const defaultImageSrc = 'images/bunny-neutral.png';
+    const happyImageSrc = 'images/bunny-happy.png';
 
     if (actionButtons.length > 0 && progressBarFills.length > 0) {
         
@@ -22,7 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             petProgressBarFill.style.width = newWidthPercent + '%'; 
             console.log("PET progress bar width set to:", newWidthPercent + '%');
-        });
+            // Change to happy image
+            petImage.src = happyImageSrc;
+            console.log("Changed image to happy"); // Check console
+
+            // Set timer to change back after 2 seconds (2000 milliseconds)
+            setTimeout(() => {
+                petImage.src = defaultImageSrc;
+                console.log("Changed image back to default");
+            }, 2000);
+        }); // End of PET button
 
         if (actionButtons.length > 1 && progressBarFills.length > 1) { 
             const feedButton = actionButtons[1];
