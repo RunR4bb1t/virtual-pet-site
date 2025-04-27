@@ -67,7 +67,7 @@ body {
     margin-right: auto;
 }
 .progress-bar-fill {
-    background-color: #A0A87C;
+    background-color: #757d53;
     height: 100%;
     border-radius: 20px;
     transition: width o.3s ease-in-out;
