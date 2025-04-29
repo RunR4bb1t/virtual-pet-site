@@ -1,6 +1,7 @@
 require('dotenv').config(); // Make sure this is at the very top
 const express = require('express');
 const { Pool } = require('pg');
+const cors = require('cors');
 
 // --- Create Database Connection Pool ---
 // (Only create ONE pool)
@@ -24,6 +25,16 @@ pool.connect((err, client, release) => {
 // --- Create Express App ---
 // (Only create ONE app)
 const app = express();
+// Enable CORS specifically for your frontend origin
+app.use(cors({
+  origin: 'https://my-virtual-pet-game.onrender.com'
+}));
+
+// Tell Express to serve static files (this likely comes after CORS)
+app.use(express.static('public'));
+
+// --- API Endpoints ---
+// (Your app.get, app.post routes go here...)
 
 // --- Middleware ---
 // Tell Express to serve static files from the 'public' directory
