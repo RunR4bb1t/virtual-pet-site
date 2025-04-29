@@ -119,6 +119,45 @@ app.post('/api/play-pet', async (req, res) => {
 // (Define port and start listening ONCE)
 const PORT = process.env.PORT || 3000; // Correctly use Render's port
 
+// --- Stat Decay Logic ---
+const decayInterval = 1000; // milliseconds (1000ms = 1 second)
+const decayAmount = 4;      // Decrease each stat by this amount per interval
+
+console.log(`Starting stat decay: -${decayAmount} points every ${decayInterval}ms`);
+
+// Use setInterval to run the decay function repeatedly
+setInterval(async () => {
+  // Use try...catch inside setInterval to prevent decay errors from crashing the server
+  try {
+    // SQL to decrease stats, ensuring they don't go below 0
+    const sql = `
+      UPDATE pets
+      SET
+        love   = GREATEST(0, love - $1),   -- GREATEST(0, ...) prevents negative values
+        hunger = GREATEST(0, hunger - $1),
+        energy = GREATEST(0, energy - $1),
+        updated_at = CURRENT_TIMESTAMP     -- Keep timestamp fresh
+      WHERE id = 1                         -- Apply only to pet ID 1 for now
+      RETURNING id, love, hunger, energy;  -- Optional: Log the new values
+    `;
+
+    // Execute the query with the decayAmount as a parameter
+    const result = await pool.query(sql, [decayAmount]);
+
+    if (result.rows.length > 0) {
+      // You can comment this log out later if it gets too noisy
+      // console.log('Decay applied:', result.rows[0]);
+    } else {
+      // This shouldn't happen if pet ID 1 exists
+      console.warn('Pet ID 1 not found during decay update.');
+    }
+
+  } catch (err) {
+    console.error('Error during stat decay interval:', err.stack);
+  }
+}, decayInterval); // Run the async function every 'decayInterval' milliseconds
+// ------------------------
+
 app.listen(PORT, () => {
   // Updated log message slightly
   console.log(`Server is running and listening on port ${PORT}`);
