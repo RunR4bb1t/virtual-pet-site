@@ -1,6 +1,8 @@
 // --- Configuration ---
-// Updated with your actual Render backend URL
+// Uses your actual Render backend URL
 const BACKEND_URL = 'https://virtual-pet-game-backend.onrender.com';
+// How often the frontend asks for updated stats (in milliseconds)
+const UI_POLLING_INTERVAL = 5000; // 5 seconds
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log("Script loaded and running!");
@@ -9,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const actionButtons = document.querySelectorAll('.action-button');
   const progressBarFills = document.querySelectorAll('.progress-bar-fill');
   const petImage = document.querySelector('.pet-image');
-  const petNameElement = document.querySelector('.pet-name'); // Assuming you have an element with class "pet-name"
+  const petNameElement = document.querySelector('.pet-name'); // Assuming class="pet-name"
 
   // --- Image Paths ---
   const defaultImageSrc = 'images/bunny-neutral.png';
@@ -28,15 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const loveProgressFill = progressBarFills[0];
 
   const feedButton = actionButtons[1];
-  const hungerProgressFill = progressBarFills[1]; // Corrected variable name likely intended
+  const hungerProgressFill = progressBarFills[1];
 
   const playButton = actionButtons[2];
-  const energyProgressFill = progressBarFills[2]; // Corrected variable name likely intended
-
+  const energyProgressFill = progressBarFills[2];
 
   // --- Function to Update UI (Progress Bars and Name) ---
   function updateUI(stats) {
-    console.log("Updating UI with stats:", stats);
+    // Avoid logging this every 5 seconds unless debugging
+    // console.log("Updating UI with stats:", stats);
     if (stats.love !== undefined) {
         loveProgressFill.style.width = Math.max(0, Math.min(100, stats.love)) + '%';
     }
@@ -47,39 +49,47 @@ document.addEventListener('DOMContentLoaded', () => {
         energyProgressFill.style.width = Math.max(0, Math.min(100, stats.energy)) + '%';
     }
     if (stats.name && petNameElement) {
-        petNameElement.textContent = stats.name; // Update pet name if element exists
+        // Only update name if it's different? Or just set it.
+        if (petNameElement.textContent !== stats.name) {
+            petNameElement.textContent = stats.name;
+        }
     }
   }
 
 
   // --- Function to Fetch and Update Pet Stats ---
+  // This will now be called periodically by setInterval AND on initial load
   async function fetchAndUpdatePetStats() {
-    console.log(`Workspaceing initial pet stats from ${BACKEND_URL}/api/pet-stats...`);
-    // Clear bars initially or show loading state? For now, clear.
-    loveProgressFill.style.width = '0%';
-    hungerProgressFill.style.width = '0%';
-    energyProgressFill.style.width = '0%';
-    if (petNameElement) petNameElement.textContent = 'Loading...';
-    petImage.src = defaultImageSrc; // Set default image
+    // Avoid logging this every 5 seconds unless debugging
+    // console.log(`Workspaceing pet stats from ${BACKEND_URL}/api/pet-stats...`);
 
     try {
-      // *** USES LIVE URL ***
       const response = await fetch(`${BACKEND_URL}/api/pet-stats`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      // Check if response is ok before processing
+      if (!response.ok) {
+          // Log specific HTTP error status if fetch fails
+          console.error(`HTTP error fetching stats! status: ${response.status}`);
+          // Decide if you want to reset UI on error or leave it as is
+          // if (petNameElement) petNameElement.textContent = 'Error';
+          // loveProgressFill.style.width = '0%'; // Example reset
+          // hungerProgressFill.style.width = '0%';
+          // energyProgressFill.style.width = '0%';
+          return; // Exit function if fetch failed
+      }
       const currentStats = await response.json();
-      console.log("Received stats from server:", currentStats);
+      // console.log("Received stats from server:", currentStats); // Debug log
       updateUI(currentStats); // Update UI with fetched stats
-      // Image might change based on stats later, for now, keep default after load
     } catch (error) {
-      console.error("Could not fetch pet stats:", error);
-      // Keep bars at 0%, show error name?
-      if (petNameElement) petNameElement.textContent = 'Error';
+      // Log network errors or JSON parsing errors
+      console.error("Could not fetch or process pet stats:", error);
+      // Optionally update UI to show an error state
+      // if (petNameElement) petNameElement.textContent = 'Network Error';
     }
   }
 
-  // --- Function to Handle Actions (Reduces repetition) ---
+  // --- Function to Handle Actions ---
   async function handlePetAction(button, progressBar, endpoint, actionImageSrc) {
-    const actionName = endpoint.split('-')[1]; // e.g., 'pet', 'feed', 'play'
+    const actionName = endpoint.split('-')[1];
     console.log(`${actionName.toUpperCase()} button clicked!`);
 
     // Check if full based on CURRENT display
@@ -87,43 +97,35 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentWidthPercent = parseInt(currentWidthStr, 10) || 0;
     if (currentWidthPercent >= 100) {
         console.log(`${actionName} stat is already full! (Frontend check)`);
-        return; // Stop if already full
+        return;
     }
 
     console.log(`Sending request to ${BACKEND_URL}${endpoint}...`);
     const previousImageSrc = petImage.src;
-    petImage.src = actionImageSrc; // Change image immediately
+    petImage.src = actionImageSrc;
 
-    // Use a timeout to revert the image *only if* the action doesn't complete quickly
-    // or if there's an error. We clear this if the fetch succeeds.
     const imageTimeout = setTimeout(() => {
-        if (petImage.src === actionImageSrc) { // Revert only if it's still the action image
+        if (petImage.src === actionImageSrc) {
             console.log("Reverting image due to timeout");
             petImage.src = previousImageSrc;
         }
-    }, 2500); // Slightly longer timeout
+    }, 2500);
 
     try {
-        // *** USES LIVE URL ***
         const response = await fetch(`${BACKEND_URL}${endpoint}`, { method: 'POST' });
-
-        clearTimeout(imageTimeout); // Action completed, cancel the revert timeout
+        clearTimeout(imageTimeout);
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const updatedStats = await response.json();
         console.log(`Received updated stats after ${actionName}:`, updatedStats);
-
-        updateUI(updatedStats); // Update UI from server response
-
-        // Set image back to default *after* successful action and UI update
-        petImage.src = defaultImageSrc;
+        updateUI(updatedStats);
+        petImage.src = defaultImageSrc; // Revert to default after successful action
 
     } catch (error) {
         console.error(`Error ${actionName}ing pet:`, error);
-        clearTimeout(imageTimeout); // Also cancel timeout on error
-        petImage.src = previousImageSrc; // Revert image immediately on error
-        // Maybe show an error message to the user?
+        clearTimeout(imageTimeout);
+        petImage.src = previousImageSrc;
     }
   }
 
@@ -135,6 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // --- Initial Load ---
+  // Fetch stats immediately when the page loads
   fetchAndUpdatePetStats();
+
+  // --- Start Polling ---
+  // Set an interval to automatically fetch stats periodically AFTER the initial load
+  console.log(`Starting periodic UI updates every ${UI_POLLING_INTERVAL}ms`);
+  setInterval(fetchAndUpdatePetStats, UI_POLLING_INTERVAL);
+  // Note: For a more complex app, you might want to clear this interval
+  // if the user navigates away from the page, but this is fine for now.
 
 }); // End of DOMContentLoaded
