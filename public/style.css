@@ -1,0 +1,184 @@
+body {
+    background-color: #e3c69b; /* Slightly off-white */
+    font-family: sans-serif;
+}
+.pet-profile-card {
+    max-width: 350px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #b28c58;
+    border: 3px solid #3d2511;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.pet-name {
+    text-align: center;
+    color: #3d2511;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+    font-weight: bold;
+}
+.pet-image {
+    width: 250px; 
+
+    /* Optional: Make it a block element and center it horizontally */
+    display: block;
+    margin-left: auto;
+    margin-right: auto; 
+
+}
+.actions-container {
+    display: flex; 
+    justify-content: center; 
+    gap: 15px;
+
+    margin-top: 20px; 
+}
+.action-item {
+    text-align: center; 
+}
+.action-button {
+    background-color: #77512b;
+    color: #e6bf83;
+    border: 3px solid #3d2511;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+}
+.action-button:hover {
+    background-color: #613E1F;
+}
+.stat-indicator {
+    margin-top: 8px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #3d2511;
+}
+.progress-bar-container {
+    background-color: #77512b;
+    border: 3px solid #3d2511;
+    border-radius: 20px;
+    height: 10px;
+    overflow: hidden;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.progress-bar-fill {
+    background-color: #757d53;
+    height: 100%;
+    border-radius: 20px;
+    transition: width o.3s ease-in-out;
+}
+
+/* --- Basic Layout Styles for Homepage Mockup --- */
+
+.main-header {
+    /* Add background/border later if desired */
+    padding: 10px;
+    border-bottom: 2px solid #8c7a61; /* Example border */
+    margin-bottom: 20px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between; /* Push image side and title/nav side apart */
+    align-items: flex-start; /* Align items to the top */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.header-images {
+    /* Basic placeholder styling */
+    /* Actual positioning of overlap/tilt requires more complex CSS */
+    position: relative; /* Needed if you want to absolute position polaroid later */
+    margin-right: 20px;
+}
+
+.profile-pic-placeholder,
+.pet-pic-placeholder {
+    border: 1px dashed #ccc;
+    padding: 20px;
+    background-color: #f8f8f8;
+    margin-bottom: 5px; /* Space them out slightly */
+    min-width: 100px; /* Give them some size */
+    text-align: center;
+}
+
+.profile-pic-placeholder {
+    min-height: 120px;
+}
+
+.pet-pic-placeholder {
+    min-height: 80px;
+    /* Tilting/overlap would be added later with position:absolute, transform:rotate */
+}
+
+
+.header-title-nav {
+    /* Takes up remaining space */
+    flex-grow: 1;
+    text-align: right; /* Align title and nav to the right */
+}
+
+.game-title {
+    margin: 0 0 10px 0; /* Adjust spacing */
+    font-size: 2.5em; /* Example size */
+    /* Add font styles later */
+}
+
+.main-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; /* Arrange nav items horizontally */
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: flex-end; /* Align items to the right */
+    background-color: #eee; /* Example background for nav bar */
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.main-nav li {
+    margin-left: 15px; /* Space between nav items */
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #333; /* Example link color */
+    font-weight: bold;
+}
+
+/* Main Content Area Layout */
+.main-content-area {
+    display: flex;
+    flex-wrap: wrap; /* Allow stacking on small screens */
+    padding: 0 10px; /* Add some padding */
+}
+
+.news-sidebar {
+    flex: 1; /* Take up some space */
+    min-width: 200px; /* Minimum width */
+    padding-right: 20px; /* Space between sidebar and main content */
+    border-right: 1px solid #eee; /* Example separator */
+    margin-right: 20px;
+    margin-bottom: 20px; /* Space below on small screens */
+}
+
+.news-item {
+    margin-bottom: 15px;
+}
+
+.news-item h3 {
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+
+
+.page-content {
+    flex: 3; /* Take up more space than sidebar */
+    min-width: 300px; /* Minimum width */
+}
+
+/* --- End Homepage Mockup Styles --- */
