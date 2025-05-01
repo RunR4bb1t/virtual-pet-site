@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Virtual Pet Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Virtual Pet Game</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/pet.html">My Pet</a>
+            </nav>
+    </header>
+
+    <main>
+        <h2>Create Your Account</h2>
+
+        <form id="register-form">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required minlength="8">
+            </div>
+            <div>
+                <button type="submit">Register</button>
+            </div>
+        </form>
+
+        <p id="message-area" role="alert" aria-live="polite"></p>
+
+        <p>Already have an account? <a href="/login.html">Log In</a></p> </main>
+
+    <footer>
+        <p>&copy; 2025 Your Game Name</p>
+    </footer>
+
+    <script src="auth.js" defer></script>
+</body>
+</html>
