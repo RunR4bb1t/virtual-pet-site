@@ -1,63 +1,57 @@
 // --- 1. GET OUR HTML ELEMENTS ---
-// Find the button and the hunger stat display in the HTML
+// Get the FIRST button inside the element with class "pet-actions"
 const feedButton = document.querySelector('.pet-actions button:first-child');
 const hungerStatElement = document.querySelector('#hunger-stat');
-const playButton = document.querySelector('.pet-actions button:first-child');
+
+// Get the LAST button inside the element with class "pet-actions"
+const playButton = document.querySelector('.pet-actions button:last-child');
 const happinessStatElement = document.querySelector('#happiness-stat');
 
 
 // --- 2. DEFINE OUR PET'S DATA ---
-// Let's create an object to hold our pet's stats.
-// This is much cleaner than having loose variables.
 let pet = {
-    hunger: 85
-};
-let pet = {
-    happiness: 85
+    hunger: 85,
+    happiness: 95
 };
 
 // --- 3. WRITE THE FUNCTIONALITY ---
-// This function will be called when the feed button is clicked
+
 function feedPet() {
-    // Logic: Increase hunger, but don't let it go over 100
     if (pet.hunger < 100) {
-        pet.hunger += 10; // Add 10 to the hunger value
+        pet.hunger += 10;
         if (pet.hunger > 100) {
-            pet.hunger = 100; // Cap it at 100
+            pet.hunger = 100;
         }
     }
-
-    // Update the text on the page to show the new hunger value
     updateHungerStat();
-
-    // Log a message to the console for debugging
     console.log("Fed the pet! New hunger:", pet.hunger);
 }
 
-function playPet() {
+function playWithPet() { // Renamed for clarity
     if (pet.happiness < 100) {
-        pet.happiness += 10;
+        pet.happiness += 5; // Let's make play add a little less than food
         if (pet.happiness > 100) {
             pet.happiness = 100;
         }
     }
-
-    // Update the text on the page to show the new hunger value
     updateHappinessStat();
-
-    // Log a message to the console for debugging
-    console.log("Play with the pet! New happiness:", pet.happiness);
+    console.log("Played with the pet! New happiness:", pet.happiness);
 }
 
-// A separate function to just update the display. This is good practice.
+// --- 4. UPDATE THE DISPLAY ---
+
+// A separate function to just update the display.
 function updateHungerStat() {
     hungerStatElement.textContent = `${pet.hunger} / 100`;
 }
+
+// A function to update the happiness display
 function updateHappinessStat() {
     happinessStatElement.textContent = `${pet.happiness} / 100`;
 }
 
-// --- 4. ATTACH THE EVENT LISTENER ---
-// Tell the button to run our feedPet function when it's clicked
+// --- 5. ATTACH THE EVENT LISTENERS ---
+
 feedButton.addEventListener('click', feedPet);
-playButton.addEventListener('click', playPet);
+
+playButton.addEventListener('click', playWithPet);
