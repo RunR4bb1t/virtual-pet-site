@@ -1,0 +1,24 @@
+{
+  "name": "virtual-pet-site",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RunR4bb1t/virtual-pet-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RunR4bb1t/virtual-pet-site/issues"
+  },
+  "homepage": "https://github.com/RunR4bb1t/virtual-pet-site#readme",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
