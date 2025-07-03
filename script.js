@@ -1,84 +1,100 @@
-// --- 1. GET OUR HTML ELEMENTS ---
+// --- 1. INITIAL AUTHENTICATION CHECK ---
+const token = localStorage.getItem('pet_token');
+if (!token) {
+    // If no token is found, redirect the user to the login page
+    window.location.href = 'login.html';
+}
+
+// --- 2. GET OUR HTML ELEMENTS ---
 const feedButton = document.querySelector('.pet-actions button:first-child');
 const playButton = document.querySelector('.pet-actions button:last-child');
+const logoutButton = document.getElementById('logout-button');
 const hungerStatElement = document.querySelector('#hunger-stat');
 const happinessStatElement = document.querySelector('#happiness-stat');
 
-// --- 2. DEFINE OUR PET'S DATA (THE NEW WAY) ---
 let pet;
 
-// --- 3. FETCH INITIAL DATA FROM THE SERVER ---
+// --- 3. FETCH USER-SPECIFIC DATA FROM THE SERVER ---
 function getPetData() {
-    console.log("Asking the server for the pet data...");
-    fetch('http://localhost:3000/api/pet')
-        .then(response => response.json())
-        .then(data => {
-            console.log("Got data from server:", data);
-            pet = data;
-
-            updateAllStats();
-        });
+    fetch('http://localhost:3000/api/user/pet', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}` // Include the token in the request
+        }
+    })
+    .then(response => {
+        if (response.status === 403 || response.status === 401) {
+            // If token is invalid or expired, force logout
+            logout();
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) throw new Error(data.error);
+        pet = data;
+        updateAllStats();
+        feedButton.disabled = false;
+        playButton.disabled = false;
+    })
+    .catch(error => {
+        console.error("Fatal error fetching pet data:", error);
+        document.querySelector('.pet-stats').innerHTML = "<h3>Could not load pet data. Please try again.</h3>";
+    });
 }
 
-// --- 4. FUNCTIONALITY ---
-function feedPet() {
-    // First, update the stat locally for instant feedback
-    if (pet.hunger < 100) {
-        pet.hunger += 10;
-        if (pet.hunger > 100) pet.hunger = 100;
-    }
-    updateHungerStat(); // Update the screen immediately
+// --- 4. FUNCTIONS TO HANDLE USER ACTIONS ---
+function feedPet() { /* ... no changes needed ... */ }
+function playWithPet() { /* ... no changes needed ... */ }
 
-    // Now, tell the server about the change
+function feedPet() {
+    if (pet.hunger >= 100) return;
+    pet.hunger = Math.min(100, pet.hunger + 10);
+    updateHungerStat();
     updatePetOnServer();
 }
 
 function playWithPet() {
-    if (pet.happiness < 100) {
-        pet.happiness += 5;
-        if (pet.happiness > 100) pet.happiness = 100;
-    }
+    if (pet.happiness >= 100) return;
+    pet.happiness = Math.min(100, pet.happiness + 5);
     updateHappinessStat();
-
-    // Also tell the server about this change
     updatePetOnServer();
 }
 
-// NEW Function: Send the entire pet object to the server
+// --- 5. FUNCTION TO SEND UPDATES TO THE SERVER ---
 function updatePetOnServer() {
-    console.log("Sending updated pet data to server:", pet);
-    fetch('http://localhost:3000/api/pet/update', { // The URL of our new POST endpoint
-        method: 'POST', // We're making a POST request
+    fetch('http://localhost:3000/api/user/pet/update', { // Use the new protected route
+        method: 'POST',
         headers: {
-            'Content-Type': 'application/json' // Tell the server we're sending JSON
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Send the token with the update
         },
-        body: JSON.stringify(pet) // Convert our JavaScript 'pet' object into a JSON string
+        body: JSON.stringify(pet),
     })
     .then(response => response.json())
     .then(data => {
-        // Log the server's success message
-        console.log('Server response:', data.message);
+        if (data.success) console.log("Server confirmed update.");
+        else console.error("Server returned an error on update.");
     });
 }
 
-// --- 5. UPDATE THE DISPLAY ---
-function updateHungerStat() {
-    hungerStatElement.textContent = `${pet.hunger} / 100`;
+// --- 6. NEW LOGOUT FUNCTIONALITY ---
+function logout() {
+    localStorage.removeItem('pet_token'); // Remove the token
+    window.location.href = 'login.html';  // Redirect to login page
 }
 
-function updateHappinessStat() {
-    happinessStatElement.textContent = `${pet.happiness} / 100`;
-}
-
+// --- 7. UPDATE DISPLAY FUNCTIONS (No changes needed) ---
+function updateHungerStat() { hungerStatElement.textContent = `${pet.hunger} / 100`; }
+function updateHappinessStat() { happinessStatElement.textContent = `${pet.happiness} / 100`; }
 function updateAllStats() {
     updateHungerStat();
     updateHappinessStat();
 }
 
-// --- 6. ATTACH THE EVENT LISTENERS ---
+// --- 8. ATTACH EVENT LISTENERS ---
 feedButton.addEventListener('click', feedPet);
 playButton.addEventListener('click', playWithPet);
+logoutButton.addEventListener('click', logout);
 
-
-// --- 7. KICK EVERYTHING OFF ---
+// --- 9. KICK EVERYTHING OFF ---
 getPetData();
