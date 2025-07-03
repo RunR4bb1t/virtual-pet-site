@@ -62,7 +62,7 @@ function playWithPet() {
 
 // --- 5. FUNCTION TO SEND UPDATES TO THE SERVER ---
 function updatePetOnServer() {
-    fetch('http://localhost:3000/api/user/pet/update', { // Use the new protected route
+    fetch('everwyn.fly.dev', { // Use the new protected route
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

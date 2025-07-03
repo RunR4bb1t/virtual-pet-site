@@ -42,7 +42,7 @@ loginForm.addEventListener('submit', function(event) {
     const username = event.target.username.value;
     const password = event.target.password.value;
 
-    fetch('http://localhost:3000/api/users/login', {
+    fetch('everwyn.fly.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),

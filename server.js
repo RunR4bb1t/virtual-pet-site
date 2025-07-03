@@ -11,7 +11,7 @@ const saltRounds = 10;
 const JWT_SECRET = 'default_secret_for_local_dev';
 
 // --- DATABASE CONNECTION ---
-const db = new sqlite3.Database('./pets.db', sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database('./data/pets.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) return console.error("Error connecting to the database:", err.message);
     console.log('Server connected to the pets.db database.');
 });
