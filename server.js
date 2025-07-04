@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
@@ -11,7 +13,8 @@ const saltRounds = 10;
 const JWT_SECRET = 'default_secret_for_local_dev';
 
 // --- DATABASE CONNECTION ---
-const db = new sqlite3.Database('./data/pets.db', sqlite3.OPEN_READWRITE, (err) => {
+const dbPath = process.env.DATABASE_PATH || './pets.db';
+const db = new sqlite3.Database('./pets.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) return console.error("Error connecting to the database:", err.message);
     console.log('Server connected to the pets.db database.');
 });

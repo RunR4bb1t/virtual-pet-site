@@ -83,3 +83,117 @@ footer {
     padding: 1rem;
     background-color: #e1e1e1;
 }
+
+/* Import the font for the headers */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+
+/* --- General Body Overrides for the New Theme --- */
+body {
+    background-color: #4a3f35; /* Dark brown background from your mockup */
+    color: #d4c3a3; /* Light golden/tan text color */
+    font-family: Georgia, 'Times New Roman', Times, serif; /* A classic default serif font */
+}
+
+/* --- Home Page Header & Navigation --- */
+.home-header {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 3px solid #7c6f63;
+}
+
+.logo {
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+.main-nav a {
+    font-family: 'Cinzel', serif; /* The special header font */
+    color: #d4c3a3;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+.main-nav a:hover {
+    color: #fff; /* Brighter color on hover */
+}
+
+.search-icon {
+    font-size: 1rem; /* Make the emoji match font size */
+}
+
+/* --- Main Content Boxes --- */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.welcome-box {
+    border: 1px solid #d4c3a3;
+    padding: 2rem;
+    text-align: center;
+    width: 80%;
+    max-width: 700px;
+}
+
+.welcome-box h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.content-box {
+    background-color: #7c6f63; /* Lighter brown for content sections */
+    padding: 2rem;
+    width: 80%;
+    max-width: 900px;
+    border: 1px solid #d4c3a3;
+}
+
+.content-box h2 {
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.news-box p {
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* --- Two Column Layout for Featured Pet/Daily Quest --- */
+.two-column-layout {
+    display: flex;
+    gap: 2rem;
+    width: 80%;
+    max-width: 900px;
+}
+
+.info-box {
+    flex: 1; /* This makes both boxes take up equal space */
+    min-height: 250px; /* Gives them some height even when empty */
+}
+
+/* --- Reusable Styled Button --- */
+.styled-button {
+    display: inline-block;
+    background-color: transparent;
+    border: 1px solid #d4c3a3;
+    color: #d4c3a3;
+    padding: 10px 25px;
+    font-family: 'Cinzel', serif;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.styled-button:hover {
+    background-color: #d4c3a3;
+    color: #4a3f35;
+}

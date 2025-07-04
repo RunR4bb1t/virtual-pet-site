@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt'); // We will use this library for password security
 
@@ -5,7 +7,8 @@ const bcrypt = require('bcrypt'); // We will use this library for password secur
 const saltRounds = 10;
 const dummyPassword = 'password123';
 
-const db = new sqlite3.Database('./data/pets.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+const dbPath = process.env.DATABASE_PATH || './pets.db';
+const db = new sqlite3.Database('./pets.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
     if (err) return console.error("Error connecting to database:", err.message);
     console.log('Connected to the pets.db SQLite database.');
 });
