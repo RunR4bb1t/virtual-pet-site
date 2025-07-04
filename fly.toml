@@ -9,6 +9,9 @@ primary_region = "ord"
   min_machines_running = 0
   processes = ["app"]
 
+[processes]
+  app = "npm start"
+
 [mounts]
   source = "pet_data_vol"
   destination = "/data"
