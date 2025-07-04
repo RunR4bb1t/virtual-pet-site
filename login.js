@@ -7,7 +7,8 @@ signupForm.addEventListener('submit', function(event) {
     const username = event.target.username.value;
     const password = event.target.password.value;
 
-    fetch('http://localhost:3000/api/users/signup', {
+    // CORRECTED URL FOR SIGNUP
+    fetch('https://everwyn.fly.dev/api/users/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -26,14 +27,13 @@ signupForm.addEventListener('submit', function(event) {
 });
 
 
-// --- NEW: LOGIN FORM LOGIC ---
+// --- LOGIN FORM LOGIC ---
 const loginForm = document.getElementById('login-form');
 const loginButton = document.querySelector('#login-form button');
-const loginMessage = document.createElement('p'); // Create a new element for login messages
+const loginMessage = document.createElement('p');
 loginMessage.className = 'message';
 loginForm.appendChild(loginMessage);
 
-// Enable the login button now
 loginButton.disabled = false;
 loginButton.textContent = 'Login';
 
@@ -42,7 +42,8 @@ loginForm.addEventListener('submit', function(event) {
     const username = event.target.username.value;
     const password = event.target.password.value;
 
-    fetch('everwyn.fly.dev', {
+    // CORRECTED URL FOR LOGIN
+    fetch('https://everwyn.fly.dev/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -50,11 +51,7 @@ loginForm.addEventListener('submit', function(event) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // If login is successful, SAVE THE TOKEN!
-            console.log('Received token:', data.token);
-            localStorage.setItem('pet_token', data.token); // Save the token to browser's local storage
-
-            // Redirect to the main pet page
+            localStorage.setItem('pet_token', data.token);
             window.location.href = 'index.html';
         } else {
             loginMessage.textContent = `Error: ${data.error}`;

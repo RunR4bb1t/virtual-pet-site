@@ -1,7 +1,6 @@
 // --- 1. INITIAL AUTHENTICATION CHECK ---
 const token = localStorage.getItem('pet_token');
 if (!token) {
-    // If no token is found, redirect the user to the login page
     window.location.href = 'login.html';
 }
 
@@ -16,15 +15,15 @@ let pet;
 
 // --- 3. FETCH USER-SPECIFIC DATA FROM THE SERVER ---
 function getPetData() {
-    fetch('http://localhost:3000/api/user/pet', {
+    // CORRECTED URL
+    fetch('https://everwyn.fly.dev/api/user/pet', {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${token}` // Include the token in the request
+            'Authorization': `Bearer ${token}`
         }
     })
     .then(response => {
         if (response.status === 403 || response.status === 401) {
-            // If token is invalid or expired, force logout
             logout();
         }
         return response.json();
@@ -43,9 +42,6 @@ function getPetData() {
 }
 
 // --- 4. FUNCTIONS TO HANDLE USER ACTIONS ---
-function feedPet() { /* ... no changes needed ... */ }
-function playWithPet() { /* ... no changes needed ... */ }
-
 function feedPet() {
     if (pet.hunger >= 100) return;
     pet.hunger = Math.min(100, pet.hunger + 10);
@@ -62,11 +58,12 @@ function playWithPet() {
 
 // --- 5. FUNCTION TO SEND UPDATES TO THE SERVER ---
 function updatePetOnServer() {
-    fetch('everwyn.fly.dev', { // Use the new protected route
+    // CORRECTED URL
+    fetch('https://everwyn.fly.dev/api/user/pet/update', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Send the token with the update
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(pet),
     })
@@ -77,13 +74,13 @@ function updatePetOnServer() {
     });
 }
 
-// --- 6. NEW LOGOUT FUNCTIONALITY ---
+// --- 6. LOGOUT FUNCTIONALITY ---
 function logout() {
-    localStorage.removeItem('pet_token'); // Remove the token
-    window.location.href = 'login.html';  // Redirect to login page
+    localStorage.removeItem('pet_token');
+    window.location.href = 'login.html';
 }
 
-// --- 7. UPDATE DISPLAY FUNCTIONS (No changes needed) ---
+// --- 7. UPDATE DISPLAY FUNCTIONS ---
 function updateHungerStat() { hungerStatElement.textContent = `${pet.hunger} / 100`; }
 function updateHappinessStat() { happinessStatElement.textContent = `${pet.happiness} / 100`; }
 function updateAllStats() {
