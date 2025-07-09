@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Everwyn – Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="user-info">
+  <a href="profile.html" class="username-link">
+    <img src="images/avatar.png" alt="Your Avatar" class="avatar" />
+    <span class="username">TestUsername</span>
+  </a>
+  <div class="time-block">
+    <span class="time-label">Everwyn Time:</span>
+    <span id="everwyn-clock"></span>
+  </div>
+</div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <li><a href="search.html">Search</a></li>
+      <li><a href="home.html">Home</a></li>
+      <li><a href="journal.html">Journal</a></li>
+      <li><a href="bestiary.html">Bestiary</a></li>
+      <li><a href="explore.html">Explore</a></li>
+      <li><a href="forums.html">Forums</a></li>
+    </ul>
+  </nav>
+
+  <!-- Log out button -->
+  <button id="logout-button" class="btn logout-btn">Log Out</button>
+</aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- TOP HEADER -->
+      <header class="dashboard-header">
+  <img src="images/logo.png" alt="Everwyn Logo" class="logo" />
+  <div class="pet-info">
+  <a href="pet-profile.html" class="petname-link">
+    <!-- 1st: the picture -->
+    <img src="images/pet.jpg" alt="Your Pet" class="pet-avatar" />
+    <!-- 2nd: the name below it -->
+    <span class="pet-name">TestPetName</span>
+  </a>
+</div>
+</header>
+
+      <!-- WELCOME BANNER -->
+      <section class="dashboard-hero">
+        <h1>Welcome, Wanderers!</h1>
+      </section>
+
+      <!-- LATEST NEWS -->
+      <section class="dashboard-news">
+        <h2>Latest News</h2>
+        <div class="news-content">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus malesuada, nisi id euismod ullamcorper, nulla arcu auctor leo, nec tristique sapien.</p>
+          <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Duis efficitur, urna non hendrerit dictum, ligula dui semper nibh.</p>
+        </div>
+      </section>
+
+      <!-- DAILY QUEST & FEATURED PET -->
+      <section class="dashboard-grid info-grid">
+        <div class="daily-quest">
+          <h2>Daily Quest</h2>
+          <p>Your mission today: Gather 5 magical berries in the Whispering Woods.</p>
+        </div>
+        <div class="featured-pet">
+          <h2>Featured Pet</h2>
+          <p>Meet Fluffy the Forest Bunny! Hunger: <strong>80/100</strong>, Happiness: <strong>95/100</strong>.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+  <script src="time.js"></script>
+</body>
+</html>

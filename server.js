@@ -1,119 +1,112 @@
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const cors = require('cors');
 require('dotenv').config();
 
-const express = require('express');
-const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
 const app = express();
-const port = 3000;
-const saltRounds = 10;
-// In a real production app, this secret key should be stored securely and not be in the code.
-const JWT_SECRET = 'default_secret_for_local_dev';
-
-// --- DATABASE CONNECTION ---
+const PORT = process.env.PORT || 3000;
 const dbPath = process.env.DATABASE_PATH || './pets.db';
-const db = new sqlite3.Database('./pets.db', sqlite3.OPEN_READWRITE, (err) => {
-    if (err) return console.error("Error connecting to the database:", err.message);
-    console.log('Server connected to the pets.db database.');
-});
+const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
 
-// --- MIDDLEWARE ---
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
 
-// ====================================================================
-// --- AUTHENTICATION ROUTES ---
+const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+  if (err) console.error(err.message);
+  else console.log(`Connected to database at ${dbPath}`);
+});
 
-// Route for user signup
+// Initialize tables
+db.run(`CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE,
+  password TEXT
+);`);
+db.run(`CREATE TABLE IF NOT EXISTS pets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  name TEXT,
+  hunger INTEGER DEFAULT 50,
+  happiness INTEGER DEFAULT 50,
+  energy INTEGER DEFAULT 50,
+  FOREIGN KEY(user_id) REFERENCES users(id)
+);`);
+
+// Sign up
 app.post('/api/users/signup', (req, res) => {
-    const { username, password } = req.body;
-    db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, user) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (user) return res.status(400).json({ error: "Username already taken." });
-
-        bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-            if (err) return res.status(500).json({ error: "Error hashing password." });
-            const insertUserSql = `INSERT INTO users (username, password) VALUES (?, ?)`;
-            db.run(insertUserSql, [username, hashedPassword], function(err) {
-                if (err) return res.status(500).json({ error: "Error creating user." });
-                const newUserId = this.lastID;
-                const insertPetSql = `INSERT INTO pets (user_id, hunger, happiness, energy) VALUES (?, ?, ?, ?)`;
-                db.run(insertPetSql, [newUserId, 100, 100, 100], (err) => {
-                    if (err) return res.status(500).json({ error: "Error creating pet." });
-                    res.status(201).json({ success: true, message: "User and pet created successfully!" });
-                });
-            });
-        });
-    });
+  const { username, password } = req.body;
+  const hashed = bcrypt.hashSync(password, 10);
+  db.run(
+    `INSERT INTO users (username, password) VALUES (?, ?)`,
+    [username, hashed],
+    function (err) {
+      if (err) return res.status(400).json({ message: 'Username already taken.' });
+      db.run(
+        `INSERT INTO pets (user_id, name) VALUES (?, ?)`,
+        [this.lastID, 'Fluffy'],
+        (err) => {
+          if (err) return res.status(500).json({ message: 'Error creating pet.' });
+          res.json({ message: 'User and pet created!' });
+        }
+      );
+    }
+  );
 });
 
-// Route for user login
+// Login
 app.post('/api/users/login', (req, res) => {
-    const { username, password } = req.body;
-    const sql = `SELECT * FROM users WHERE username = ?`;
-    db.get(sql, [username], (err, user) => {
-        if (err) return res.status(500).json({ error: "Server error." });
-        if (!user) return res.status(400).json({ error: "Invalid username or password." });
-
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) return res.status(500).json({ error: "Server error during password comparison." });
-            if (isMatch) {
-                const payload = { userId: user.id, username: user.username };
-                const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
-                res.json({ success: true, message: "Login successful!", token: token });
-            } else {
-                res.status(400).json({ error: "Invalid username or password." });
-            }
-        });
-    });
+  const { username, password } = req.body;
+  db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, user) => {
+    if (err || !user) return res.status(400).json({ message: 'Invalid credentials.' });
+    if (!bcrypt.compareSync(password, user.password)) {
+      return res.status(400).json({ message: 'Invalid credentials.' });
+    }
+    const token = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn: '1h' });
+    res.json({ token });
+  });
 });
 
-// --- AUTHENTICATION MIDDLEWARE ---
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.sendStatus(401);
-
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
+// Auth middleware
+const authenticate = (req, res, next) => {
+  const auth = req.headers.authorization;
+  if (!auth) return res.status(401).json({ message: 'No token.' });
+  const token = auth.split(' ')[1];
+  jwt.verify(token, jwtSecret, (err, decoded) => {
+    if (err) return res.status(401).json({ message: 'Invalid token.' });
+    req.userId = decoded.userId;
+    next();
+  });
 };
 
-// --- PROTECTED PET DATA ROUTES ---
-app.get('/api/user/pet', authenticateToken, (req, res) => {
-    const sql = `SELECT * FROM pets WHERE user_id = ?`;
-    db.get(sql, [req.user.userId], (err, pet) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (!pet) return res.status(404).json({ error: "No pet found for this user." });
-        res.json(pet);
-    });
+// Get pet
+app.get('/api/user/pet', authenticate, (req, res) => {
+  db.get(`SELECT * FROM pets WHERE user_id = ?`, [req.userId], (err, pet) => {
+    if (err || !pet) return res.status(404).json({ message: 'Pet not found.' });
+    res.json(pet);
+  });
 });
 
-app.post('/api/user/pet/update', authenticateToken, (req, res) => {
-    const newData = req.body;
-    const sql = `UPDATE pets SET hunger = ?, happiness = ? WHERE user_id = ?`;
-    const params = [newData.hunger, newData.happiness, req.user.userId];
-    db.run(sql, params, function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true, message: "Pet data updated successfully." });
-    });
+// Update pet (feed/play)
+app.post('/api/user/pet', authenticate, (req, res) => {
+  const { action } = req.body;
+  let field;
+  if (action === 'feed') field = 'hunger';
+  else if (action === 'play') field = 'happiness';
+  else return res.status(400).json({ message: 'Invalid action.' });
+  db.run(
+    `UPDATE pets SET ${field} = MIN(100, ${field} + 10) WHERE user_id = ?`,
+    [req.userId],
+    function (err) {
+      if (err) return res.status(500).json({ message: 'Error updating pet.' });
+      res.json({ message: 'Pet updated!' });
+    }
+  );
 });
-// ====================================================================
 
-// --- PET STAT DECAY ---
-function decayStats() {
-    const sql = `UPDATE pets SET hunger = MAX(0, hunger - 1), happiness = MAX(0, happiness - 2)`;
-    db.run(sql, [], (err) => {
-        if (err) console.error("Error decaying stats:", err.message);
-    });
-}
-setInterval(decayStats, 30000);
-
-// --- START THE SERVER ---
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
