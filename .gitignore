@@ -1,3 +1,18 @@
-node_modules
-pets.db
-.env
+# Node.js
+node_modules/
+npm-debug.log*
+.env # Keep your environment variables secret
+*.log
+
+# Database
+pets.db # Your SQLite database file
+
+# Fly.io deployment specific
+.fly/
+fly.toml.bak # If Fly.io creates backups
+
+# IDE and OS files
+.vscode/ # VS Code settings
+.idea/   # IntelliJ/WebStorm settings
+.DS_Store # macOS specific files
+Thumbs.db # Windows thumbnail cache

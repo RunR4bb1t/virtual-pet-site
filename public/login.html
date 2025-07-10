@@ -2,29 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login / Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Login or create an account for Everwyn, your virtual pet game." />
+  <title>Everwyn – Login / Sign Up</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <h1>Welcome to Your Virtual Pet Site!</h1>
-  <section>
-    <h2>Login</h2>
-    <form id="login-form">
-      <label>Username:<input type="text" name="username" required /></label><br/>
-      <label>Password:<input type="password" name="password" required /></label><br/>
-      <button type="submit">Login</button>
-    </form>
-    <p id="login-message"></p>
-  </section>
-  <section>
-    <h2>Sign Up</h2>
-    <form id="signup-form">
-      <label>Username:<input type="text" name="username" required /></label><br/>
-      <label>Password:<input type="password" name="password" required /></label><br/>
-      <button type="submit">Sign Up</button>
-    </form>
-    <p id="signup-message"></p>
-  </section>
+  <header>
+    <h1>Welcome to Everwyn!</h1>
+  </header>
+
+  <main>
+    <section class="auth-section">
+      <h2>Login</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-username">Username:</label>
+          <input type="text" id="login-username" name="username" placeholder="Enter your username" required />
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password:</label>
+          <input type="password" id="login-password" name="password" placeholder="Enter your password" required />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      <p id="login-message" class="message-area"></p>
+    </section>
+
+    <section class="auth-section">
+      <h2>Sign Up</h2>
+      <form id="signup-form">
+        <div class="form-group">
+          <label for="signup-username">Username:</label>
+          <input type="text" id="signup-username" name="username" placeholder="Choose a username" required />
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password:</label>
+          <input type="password" id="signup-password" name="password" placeholder="Create a password" required />
+        </div>
+        <button type="submit">Sign Up</button>
+      </form>
+      <p id="signup-message" class="message-area"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Everwyn. All rights reserved.</p>
+  </footer>
+
   <script src="js/login.js"></script>
 </body>
 </html>

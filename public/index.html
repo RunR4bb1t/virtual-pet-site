@@ -2,24 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Your Pet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Manage and interact with your virtual pet!" />
+  <title>Your Virtual Pet - Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <nav>
-    <a href="login.html">Home</a>
-    <button id="logout-button">Logout</button>
-  </nav>
-  <h1>Your Virtual Pet</h1>
-  <div class="pet-stats">
-    <p>Hunger: <span id="hunger-stat">--</span>/100</p>
-    <p>Happiness: <span id="happiness-stat">--</span>/100</p>
-    <p>Energy: <span id="energy-stat">--</span>/100</p>
-  </div>
-  <div class="pet-actions">
-    <button id="feed-button">Feed Pet</button>
-    <button id="play-button">Play with Pet</button>
-  </div>
-  <script src="script.js"></script>
-</body>
+  <header>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <button id="logout-button">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Your Virtual Pet</h1>
+    <section class="pet-stats">
+      <h2>Pet Stats</h2>
+      <p>Hunger: <span id="hunger-stat">--</span>/100</p>
+      <p>Happiness: <span id="happiness-stat">--</span>/100</p>
+      <p>Energy: <span id="energy-stat">--</span>/100</p>
+    </section>
+
+    <section class="pet-actions">
+      <h2>Actions</h2>
+      <button id="feed-button">Feed Pet</button>
+      <button id="play-button">Play with Pet</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Virtual Pet Game</p>
+  </footer>
+
+  <script src="js/dashboard.js"></script>
+  </body>
 </html>

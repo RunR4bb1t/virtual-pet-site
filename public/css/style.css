@@ -12,7 +12,10 @@
   --serif: Georgia, serif;
 }
 
-* {
+/* Universal box-sizing for consistent layouts */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -23,27 +26,40 @@ body {
   color: var(--border);
   font-family: var(--serif);
   line-height: 1.5;
+  min-height: 100vh; /* Ensure body takes full viewport height */
+  display: flex; /* Use flexbox for main layout (e.g., for dashboard) */
+  flex-direction: column; /* Allows content to stack vertically */
 }
 
 /* ==========================================================================
    GLOBAL LINKS & BUTTONS
    ========================================================================== */
-a,
-.btn {
-  display: inline-block;
-  text-decoration: none;
+a {
   color: var(--border);
+  text-decoration: none;
   font-weight: bold;
-  transition: background 0.2s, color 0.2s;
+  transition: color 0.2s; /* Only transition color for generic links */
 }
 
+a:hover {
+  color: var(--cream); /* Change to a highlight color on hover */
+}
+
+/* Base styles for all buttons and specific links that look like buttons */
 button,
 .btn,
 .sidebar-nav a {
+  display: inline-block;
   border: 1px solid var(--border);
   background: var(--nav-bg);
+  color: var(--border); /* Ensure color from button is applied */
+  font-family: var(--serif); /* Ensure consistent font for buttons */
+  font-weight: bold;
   cursor: pointer;
   padding: 0.5rem 1rem;
+  text-align: center; /* Center text in block buttons */
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  /* Add border-color to transition for smoother hover effects */
 }
 
 button:hover,
@@ -51,6 +67,22 @@ button:hover,
 .sidebar-nav a:hover {
   background: var(--border);
   color: var(--bg);
+  border-color: var(--nav-bg); /* Adjust border on hover for visual feedback */
+}
+
+/* Special style for the prominent "big-btn" */
+.big-btn {
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  background: var(--border);
+  color: var(--bg); /* Inverted colors for prominence */
+  border-color: var(--border); /* Explicit border color */
+}
+
+.big-btn:hover {
+  background: var(--nav-bg);
+  color: var(--border);
+  border-color: var(--border); /* Keep border consistent on hover */
 }
 
 /* ==========================================================================
@@ -61,33 +93,53 @@ button:hover,
   max-width: 1000px;
   margin: 0 auto;
   padding: 0 1rem;
+  width: 100%; /* Ensure they take full width within padding */
 }
 
-@media (max-width: 768px) {
-  .dashboard-container {
-    flex-direction: column;
-  }
-  .sidebar {
-    width: 100%;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 0.5rem;
-  }
-  .sidebar-nav ul {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .sidebar-nav li {
-    margin: 0;
-  }
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
+/* Re-added this for login.html form groups */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block; /* Make labels stack above inputs */
+  margin-bottom: 0.5rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  background-color: var(--content-bg-dark);
+  color: var(--cream);
+  font-family: var(--serif);
+}
+
+.message-area {
+  margin-top: 0.5rem;
+  font-size: 0.9em;
+  color: var(--cream); /* Example color for messages */
+}
+
+/* Basic header, main, and footer styles for consistent layout */
+header, footer {
+  flex-shrink: 0; /* Prevent header/footer from shrinking */
+}
+
+main {
+  flex-grow: 1; /* Allow main content to take available space */
 }
 
 /* ==========================================================================
-   PLAIN HOMEPAGE
+   PLAIN HOMEPAGE (for home.html and login.html, etc.)
    ========================================================================== */
+.plain-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure plain pages also fill height if needed */
+}
+
 .plain-page .plain-header {
   background: var(--nav-bg);
   padding: 1rem 0;
@@ -96,6 +148,7 @@ button:hover,
 
 .plain-page .plain-header .logo {
   max-width: 240px;
+  height: auto; /* Ensure aspect ratio is maintained */
 }
 
 .plain-page .tagline {
@@ -120,16 +173,7 @@ button:hover,
   display: grid;
   gap: 2rem;
   margin: 2rem 0;
-  place-items: center;
-}
-
-@media (min-width: 768px) {
-  .plain-page .plain-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .plain-page .plain-grid .plain-section:nth-child(3) {
-    grid-column: 1 / -1;
-  }
+  place-items: center; /* Centers items horizontally and vertically if they don't fill the grid cell */
 }
 
 .plain-section {
@@ -137,40 +181,56 @@ button:hover,
   border: 1px solid var(--border);
   padding: 1.5rem;
   text-align: center;
+  width: 100%; /* Ensure it takes full width in its grid cell */
 }
 
-.plain-section h2 {
+.plain-section h2, .plain-section h3 { /* Added h3 for consistency with new HTML */
   display: inline-block;
   background: var(--header-bg);
   padding: 0.5rem 1rem;
   border: 1px solid var(--border);
   margin-bottom: 1rem;
+  font-size: 1.5rem; /* Explicitly set font size for consistency */
 }
 
 .center-content {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.big-btn {
-  font-size: 1.2rem;
-  padding: 1rem 2rem;
-  background: var(--border);
-  color: var(--bg);
-}
-
-.big-btn:hover {
-  background: var(--nav-bg);
-  color: var(--border);
+  min-height: 50px; /* Ensure content area has some height for centering */
 }
 
 /* ==========================================================================
-   DASHBOARD
+   AUTH SECTIONS (for login.html)
+   ========================================================================== */
+.auth-section {
+  background: var(--content-bg);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 500px; /* Limit width for forms */
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.auth-section h2 {
+  margin-bottom: 1.5rem;
+  color: var(--cream);
+}
+
+.auth-section form button {
+  width: auto; /* Allow buttons to size based on content */
+  margin-top: 1rem;
+}
+
+/* ==========================================================================
+   DASHBOARD LAYOUT & COMPONENTS
    ========================================================================== */
 .dashboard-container {
   display: flex;
-  min-height: 100vh;
+  min-height: 100vh; /* Ensure dashboard takes full viewport height */
+  flex-grow: 1; /* Allow dashboard container to fill available space */
+  padding: 0; /* Remove padding from here as main-content has it */
 }
 
 .sidebar {
@@ -180,11 +240,14 @@ button:hover,
   flex-direction: column;
   padding: 1rem;
   overflow-y: auto;
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
 }
 
 .user-info {
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem; /* Add padding below user info */
+  border-bottom: 1px solid var(--border); /* Separator line */
 }
 
 .user-info .avatar {
@@ -193,21 +256,24 @@ button:hover,
   border-radius: 50%;
   border: 3px solid var(--border);
   margin: 0 auto 0.5rem;
+  display: block; /* Ensure avatar is a block element for margin auto to work */
 }
 
 .username-link {
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: var(--cream); /* Ensure link color for username */
+  text-decoration: none;
 }
 
 .username-link .username {
   margin-top: 0.25rem;
+  font-weight: bold;
 }
 
 .time-block {
-  border-top: 1px solid var(--border);
-  margin-top: 0.75rem;
+  margin-top: 1rem;
   padding-top: 0.75rem;
   text-align: center;
 }
@@ -215,16 +281,19 @@ button:hover,
 .time-label {
   display: block;
   font-weight: bold;
+  color: var(--cream); /* Ensure time label stands out */
 }
 
 #everwyn-clock {
   display: block;
   margin-top: 0.25rem;
   font-size: 1.1rem;
+  color: var(--cream); /* Ensure clock time stands out */
 }
 
 .sidebar-nav ul {
   list-style: none;
+  margin-bottom: 1.5rem; /* Space below the nav list */
 }
 
 .sidebar-nav li {
@@ -234,20 +303,28 @@ button:hover,
 .sidebar-nav a {
   background: var(--content-bg);
   color: var(--border);
-  text-align: center;
   display: block;
+  padding: 0.75rem 1rem; /* Slightly more padding for nav items */
+  border-radius: 4px; /* Soften corners */
+}
+
+.sidebar-nav a:hover {
+  background: var(--border);
+  color: var(--bg);
 }
 
 .logout-btn {
-  margin-top: auto;
+  margin-top: auto; /* Pushes the button to the bottom of the sidebar */
   width: 100%;
   text-align: center;
+  padding: 0.75rem 1rem; /* Consistent padding */
 }
 
 .main-content {
   flex: 1;
   background: var(--bg);
-  padding: 0 1rem 1rem;
+  padding: 1.5rem 1rem 1rem; /* Added top padding */
+  overflow-y: auto; /* Allow main content to scroll if needed */
 }
 
 .dashboard-header {
@@ -257,23 +334,26 @@ button:hover,
   background: var(--nav-bg);
   padding: 1rem;
   border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem; /* Space below the header */
 }
 
 .dashboard-header .logo {
   max-width: 180px;
+  height: auto; /* Maintain aspect ratio */
 }
 
 .pet-info {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center; /* Center text within pet-info */
 }
 
 .petname-link {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--border);
+  color: var(--cream); /* Consistent color for pet name */
   text-decoration: none;
 }
 
@@ -282,25 +362,29 @@ button:hover,
   height: 80px;
   border-radius: 50%;
   border: 3px solid var(--border);
+  object-fit: cover; /* Ensure image covers the area */
 }
 
 .petname-link .pet-name {
   margin-top: 0.5rem;
+  font-weight: bold;
 }
 
 .dashboard-hero {
   background: url('../images/header-bg.jpg') center/cover no-repeat;
   padding: 2.5rem 1rem;
   text-align: center;
+  margin-bottom: 2rem; /* Space below the hero section */
+  color: var(--cream); /* Ensure text is visible on background image */
 }
 
 .dashboard-hero h1 {
-  font-size: 2rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  font-size: 2.5rem; /* Slightly larger heading for impact */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); /* Stronger shadow */
 }
 
 .dashboard-news {
-  margin: 2rem 0 1rem;
+  margin-bottom: 2rem; /* Consistent margin */
 }
 
 .dashboard-news h2 {
@@ -309,33 +393,126 @@ button:hover,
   border-bottom: 1px solid var(--border);
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
+  color: var(--cream); /* Ensure news heading stands out */
 }
 
 .dashboard-news .news-content {
   background: var(--content-bg-dark);
   border: 1px solid var(--border);
-  padding: 1rem;
+  padding: 1.5rem; /* Slightly more padding */
   min-height: 150px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+  border-radius: 6px; /* Soften corners */
+}
+
+.dashboard-news p {
+  margin-bottom: 0.8rem; /* Space between paragraphs */
+  color: var(--cream);
+}
+.dashboard-news p:last-child {
+  margin-bottom: 0;
 }
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted min-width for better scaling */
+  gap: 1.5rem; /* Increased gap for better visual separation */
+  margin-top: 1.5rem; /* Consistent margin */
 }
 
 .dashboard-grid > div {
   background: var(--content-bg-dark);
   border: 1px solid var(--border);
-  padding: 1rem;
+  padding: 1.5rem; /* Consistent padding */
   min-height: 150px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+  border-radius: 6px; /* Soften corners */
+  text-align: center; /* Center content within grid items */
 }
 
 .dashboard-grid h2 {
-  text-align: center;
-  margin: 0 0 0.5rem;
-  font-size: 1.5rem;
+  font-size: 1.6rem; /* Adjusted font size for sub-sections */
+  margin: 0 0 0.8rem; /* Consistent margin */
+  color: var(--cream);
+}
+
+.dashboard-grid p {
+  color: var(--cream);
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 768px) {
+  body {
+    flex-direction: column; /* Stack main and sidebar */
+  }
+
+  .dashboard-container {
+    flex-direction: column; /* Stack main-content and sidebar */
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row; /* Sidebar items in a row for mobile */
+    overflow-x: auto; /* Allow horizontal scroll if many nav items */
+    padding: 0.5rem;
+    height: auto; /* Adjust height based on content */
+  }
+
+  .sidebar-nav ul {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0; /* Remove default ul padding */
+    justify-content: center; /* Center nav items horizontally */
+    flex-wrap: wrap; /* Allow nav items to wrap to next line */
+  }
+
+  .sidebar-nav li {
+    margin: 0; /* Remove vertical margin */
+  }
+
+  .sidebar-nav a {
+    flex-shrink: 0; /* Prevent links from shrinking too much */
+    padding: 0.4rem 0.8rem; /* Smaller padding for mobile nav */
+    font-size: 0.9em;
+  }
+
+  .logout-btn {
+    margin-top: 1rem; /* Add some space if it's below the horizontal nav */
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr; /* Stack grid items vertically on small screens */
+  }
+
+  .plain-page .plain-grid {
+    grid-template-columns: 1fr; /* Stack plain grid sections on small screens */
+  }
+
+  .dashboard-header {
+    flex-direction: column; /* Stack logo and pet info vertically */
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .dashboard-header .logo {
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Minor adjustments for screens smaller than 480px */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+  h2 {
+    font-size: 1.4rem;
+  }
+  .plain-page .tagline p {
+    font-size: 1rem;
+  }
+  .dashboard-hero h1 {
+    font-size: 2rem;
+  }
 }

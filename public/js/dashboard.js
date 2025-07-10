@@ -1,70 +1,180 @@
 /**
- * dashboard.js – clock, pet stats, actions, and logout
+ * dashboard.js – handles dashboard functionality, including pet stats and actions.
  */
 
-const PET_API = '/api/user/pet';
+// --- Constants ---
+const API_BASE_URL = '/api/pet'; // Assuming an API endpoint for pet interactions
+const AUTH_API_URL = '/api/users/logout'; // Assuming an API endpoint for logout
 
-function updateEverwynTime() {
-  const el = document.getElementById('everwyn-clock');
-  if (!el) return;
-  const now = new Date();
-  const timeString = now.toLocaleTimeString('en-US', {
-    timeZone: 'America/Chicago',
-    hour:   'numeric',
-    minute: '2-digit',
-    hour12: true
-  });
-  el.textContent = timeString;
-}
+// --- DOM Elements (initialized later for safety) ---
+let hungerStatElement;
+let happinessStatElement;
+let energyStatElement;
+let feedButton;
+let playButton;
+let logoutButton;
+let everwynClockElement; // From dashboard.html for the clock
 
-async function loadPet() {
-  const token = localStorage.getItem('token');
-  if (!token) return window.location.href = 'login.html';
+/**
+ * Helper function to update pet stats display.
+ * @param {object} stats - An object containing hunger, happiness, and energy.
+ */
+const updatePetStatsDisplay = (stats) => {
+  if (hungerStatElement) hungerStatElement.textContent = stats.hunger;
+  if (happinessStatElement) happinessStatElement.textContent = stats.happiness;
+  if (energyStatElement) energyStatElement.textContent = stats.energy;
+};
 
-  try {
-    const res = await fetch(PET_API, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error();
-    const pet = await res.json();
-    document.getElementById('hunger-stat').textContent    = pet.hunger;
-    document.getElementById('happiness-stat').textContent = pet.happiness;
-    document.getElementById('energy-stat').textContent    = pet.energy;
-  } catch {
-    localStorage.removeItem('token');
-    window.location.href = 'login.html';
+/**
+ * Fetches the current pet stats from the backend.
+ * @returns {Promise<object|null>} Pet stats object on success, null on error.
+ */
+const fetchPetStats = async () => {
+  const token = localStorage.getItem('jwtToken'); // Get JWT token from login.js
+  if (!token) {
+    console.warn('No authentication token found. Redirecting to login.');
+    window.location.href = 'login.html'; // Redirect if no token
+    return null;
   }
-}
 
-async function petAction(action) {
-  const token = localStorage.getItem('token');
   try {
-    await fetch(PET_API, {
+    const response = await fetch(`${API_BASE_URL}/stats`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // Send the token in the Authorization header
+      }
+    });
+
+    if (response.ok) {
+      const stats = await response.json();
+      updatePetStatsDisplay(stats); // Update the UI immediately
+      return stats;
+    } else if (response.status === 401) {
+      // Token expired or invalid
+      console.warn('Authentication failed. Redirecting to login.');
+      localStorage.removeItem('jwtToken');
+      window.location.href = 'login.html';
+    } else {
+      console.error('Failed to fetch pet stats:', response.status, response.statusText);
+      // Optionally show a message to the user
+    }
+  } catch (error) {
+    console.error('Network error fetching pet stats:', error);
+  }
+  return null;
+};
+
+/**
+ * Sends an action to the pet (feed/play).
+ * @param {string} actionType - 'feed' or 'play'.
+ */
+const performPetAction = async (actionType) => {
+  const token = localStorage.getItem('jwtToken');
+  if (!token) {
+    console.warn('No authentication token found for action. Redirecting to login.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try {
+    // Disable buttons to prevent spamming
+    if (feedButton) feedButton.disabled = true;
+    if (playButton) playButton.disabled = true;
+
+    const response = await fetch(`${API_BASE_URL}/${actionType}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type':  'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ action })
+      body: JSON.stringify({}) // Send an empty body or any specific action data
     });
-    loadPet();
-  } catch (err) {
-    console.error('Pet action error:', err);
+
+    if (response.ok) {
+      const updatedStats = await response.json();
+      updatePetStatsDisplay(updatedStats);
+      console.log(`Pet ${actionType}ed successfully!`);
+      // Optionally provide more visual feedback, e.g., a temporary message
+    } else if (response.status === 401) {
+      console.warn('Authentication failed for action. Redirecting to login.');
+      localStorage.removeItem('jwtToken');
+      window.location.href = 'login.html';
+    } else {
+      const errorData = await response.json();
+      console.error(`Failed to ${actionType} pet:`, errorData.message || response.statusText);
+      // Show user-friendly error message
+    }
+  } catch (error) {
+    console.error(`Network error during ${actionType} action:`, error);
+  } finally {
+    // Re-enable buttons regardless of success or failure
+    if (feedButton) feedButton.disabled = false;
+    if (playButton) playButton.disabled = false;
   }
-}
+};
 
-function initListeners() {
-  document.getElementById('feed-button')?.addEventListener('click', () => petAction('feed'));
-  document.getElementById('play-button')?.addEventListener('click', () => petAction('play'));
-  document.getElementById('logout-button')?.addEventListener('click', () => {
-    localStorage.removeItem('token');
-    window.location.href = 'login.html';
-  });
-}
+/**
+ * Handles user logout.
+ */
+const handleLogout = async () => {
+  const token = localStorage.getItem('jwtToken');
+  if (token) {
+    try {
+      // Optionally send a request to backend to invalidate token
+      await fetch(AUTH_API_URL, {
+        method: 'POST', // Or 'GET' depending on your backend logout implementation
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+    } catch (error) {
+      console.error('Error during backend logout (might already be logged out):', error);
+    }
+    localStorage.removeItem('jwtToken'); // Clear token from client-side storage
+  }
+  window.location.href = 'login.html'; // Redirect to login page
+};
 
+// --- Everwyn Clock Update (assuming time.js might be merged or simplified here) ---
+const updateEverwynClock = () => {
+  if (everwynClockElement) {
+    const now = new Date();
+    // Example of a simple custom time display
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    everwynClockElement.textContent = `${hours}:${minutes}:${seconds}`;
+  }
+};
+
+
+// --- Initialization on DOM Content Loaded ---
 document.addEventListener('DOMContentLoaded', () => {
-  updateEverwynTime();
-  setInterval(updateEverwynTime, 60_000);
-  loadPet();
-  initListeners();
+  // Initialize DOM element references
+  hungerStatElement = document.getElementById('hunger-stat');
+  happinessStatElement = document.getElementById('happiness-stat');
+  energyStatElement = document.getElementById('energy-stat');
+  feedButton = document.getElementById('feed-button');
+  playButton = document.getElementById('play-button');
+  logoutButton = document.getElementById('logout-button');
+  everwynClockElement = document.getElementById('everwyn-clock'); // Get clock element
+
+  // Check for presence of elements before adding listeners
+  if (feedButton) {
+    feedButton.addEventListener('click', () => performPetAction('feed'));
+  }
+  if (playButton) {
+    playButton.addEventListener('click', () => performPetAction('play'));
+  }
+  if (logoutButton) {
+    logoutButton.addEventListener('click', handleLogout);
+  }
+
+  // Initial fetch of pet stats
+  fetchPetStats();
+
+  // Set up Everwyn clock (if time.js is no longer a separate file)
+  if (everwynClockElement) {
+    updateEverwynClock(); // Initial clock display
+    setInterval(updateEverwynClock, 1000); // Update every second
+  }
 });
